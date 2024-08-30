@@ -1,0 +1,22 @@
+# Dockerfile for building an Apache web server image based on Ubuntu
+
+# Base image
+FROM ubuntu:latest
+
+# Update installed packages and install Apache
+RUN apt-get update && \
+    apt-get install -y apache2
+
+# Write hello world message
+RUN echo 'Hello World!' > /var/www/html/index.html
+
+# Configure Apache
+RUN echo 'mkdir -p /var/run/apache2' >> /root/run_apache.sh && \
+    echo 'mkdir -p /var/lock/apache2' >> /root/run_apache.sh && \
+    echo '/usr/sbin/apache2ctl -D FOREGROUND' >> /root/run_apache.sh && \
+    chmod 755 /root/run_apache.sh
+
+# Expose port 80
+EXPOSE 80
+
+CMD /root/run_apache.sh
