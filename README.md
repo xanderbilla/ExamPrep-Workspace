@@ -12,9 +12,9 @@ This repo is used to demonstrate my DevOps project at Lovely Professional Univer
 
 | Content          | Docs               | 
 | :--------------- | :----------------: | 
-| Mini - Project 1 | [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/tree/main/Mini%20-%20Project%201/README.md)|
-| Mini - Project 2 | [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/tree/main/Mini%20-%20Project%202/README.md)|
-| Final Project    | [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/tree/main/Final%20-%20Project/README.md)|
+| L1 - Project 1 | [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/tree/main/L1_Project_1/README.md)|
+| L2 - Project 2 | [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/tree/main/L1_Project_2/README.md)|
+| Final Project    | [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/tree/main/Final_Project/README.md)|
 
 
 # Author
