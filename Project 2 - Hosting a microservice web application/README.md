@@ -1,4 +1,4 @@
-### [**Table of Contents**](https://github.com/xanderbilla/ExamPrep-AWS/wiki)
+### [**Table of Contents**](my-apphttps://github.com/xanderbilla/ExamPrep-Workspace/wiki)
 
 # Project 2 - Hosting a microservice web application
 
