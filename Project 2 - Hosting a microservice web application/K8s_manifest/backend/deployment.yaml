@@ -25,7 +25,7 @@ spec:
       - name: ecr-registry-secret
       containers:
       - name: api
-        image: 407622020962.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+        image: public.ecr.aws/u7m1j8y0/my-app/backend:latest
         imagePullPolicy: Always
         env:
           - name: MONGO_CONN_STR
@@ -48,17 +48,17 @@ spec:
             cpu: "0.5"
             memory: "750Mi"
         ports:
-        - containerPort: 3500
+        - containerPort: 8080
         livenessProbe: 
           httpGet:
             path: /ok
-            port: 3500
+            port: 8080
           initialDelaySeconds: 2
           periodSeconds: 5
         readinessProbe:
           httpGet:
             path: /ok
-            port: 3500
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
           successThreshold: 1

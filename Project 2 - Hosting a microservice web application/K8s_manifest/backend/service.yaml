@@ -5,7 +5,7 @@ metadata:
   namespace: my-app
 spec: 
   ports:
-  - port: 3500
+  - port: 8080
     protocol: TCP
   type: ClusterIP
   selector:
