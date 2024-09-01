@@ -1,4 +1,4 @@
-### [**Table of Contents**](my-apphttps://github.com/xanderbilla/ExamPrep-Workspace/wiki)
+### [**Table of Contents**](https://github.com/xanderbilla/ExamPrep-Workspace/wiki)
 
 # Project 1 ‐ Create a CI CD Pipeline
 
