@@ -1,87 +1,12 @@
-# Final Project - Hosting a microservice web application
+### [**Table of Contents**](https://github.com/xanderbilla/ExamPrep-AWS/wiki)
 
-# Introduction
+# Project 2 - Hosting a microservice web application
 
-The major project undertaken as part of this training involves deploying a fully functional 
-MERN (MongoDB, Express.js, React, Node.js) application using Docker, Kubernetes, Elastic 
-Container Registry (ECR), and Elastic Kubernetes Service (EKS) on AWS. This project aims 
-to demonstrate the complete workflow of deploying a containerized application in a scalable, 
-secure, and efficient manner, utilizing industry-standard DevOps practices. 
+### [**Click here to read the developer docs**](https://github.com/xanderbilla/ExamPrep-Workspace/wiki/Project-2-%E2%80%90-Hosting-a-microservice-web-application)
 
-# Project Overview
+## Implementation
 
-This project involves fetching the MERN application's source code from a GitHub repository, 
-creating a Dockerfile to containerize the application, storing the Docker image in ECR, and 
-deploying the application on an EKS cluster. The deployment is enhanced with an Ingress 
-Controller for managing external access to the Kubernetes cluster and an Application Load 
-Balancer (ALB) for distributing traffic efficiently. The end-users will access the application 
-through the DNS address provided by the ALB. 
-
-# Workflow and implementation
-
-![ST_Final_Project](https://xanderbilla.s3.ap-south-1.amazonaws.com/Semester_V/__assets/ST_Final_Project.png)
-
-The workflow for deploying the MERN application is outlined in the following steps: 
-
-### Fetching Code from GitHub 
-The first step in the deployment process involves retrieving the MERN application's source code from a GitHub repository. This code contains the front-end (React) and back-end (Node.js and Express.js) components of the application, along with the necessary configuration files. 
-
-### Creating a Dockerfile 
-Once the code is fetched, a Dockerfile is created to define the environment in which the MERN application will run. The Dockerfile includes instructions for: 
-
-- Setting up the base image (usually an official Node.js image).
-
-- Installing the necessary dependencies for both the front-end and back-end. 
-- Building the React front-end. 
-
-- Setting up the Express.js server to serve both the API and the React front-end. 
-
-- Configuring the environment variables and ports. 
-
-This Dockerfile serves as the blueprint for creating a Docker image of the MERN application. 
-
-### Building and Pushing the Docker Image to ECR 
-
-With the Dockerfile in place, the Docker image is built locally or on a CI/CD platform such as Jenkins. Once the image is built, it is tagged and pushed to AWS Elastic Container Registry (ECR), a fully managed container image registry. ECR securely stores the Docker images and allows them to be pulled by services running in AWS. 
-
-### Deploying the Application on EKS 
-The next step involves deploying the Docker image on an Elastic Kubernetes Service (EKS) cluster. The process includes: 
-
-- **Creating Kubernetes Deployment and Service Configurations:** YAML 
-configuration files are created to define the Deployment (which manages the Pods running the application) and the Service (which exposes the Pods to external traffic). 
-
-- **Using ECR Images:** The Kubernetes deployment configuration is set to pull the Docker image from ECR. 
-
-- **Setting Up Persistent Storage:** Configuring persistent volumes to ensure that 
-MongoDB data is retained across Pod restarts. 
-
-- **Configuring Environment Variables:** Environment variables, such as database URLs and API keys, are injected into the containers via Kubernetes secrets and config maps. 
-
-### Setting Up Ingress Controller and ALB 
-
-To manage incoming traffic to the EKS cluster, an Ingress Controller is set up. The Ingress Controller provides HTTP and HTTPS routing to the services within the cluster, enabling access from the outside world. Additionally: 
-
-- Application Load Balancer (ALB) is configured to distribute traffic across the Pods running in the EKS cluster. ALB automatically scales the number of instances based on traffic, ensuring high availability and fault tolerance.
-
-### Accessing the Application 
-
-Finally, the DNS address provided by the ALB is used by end-users to access the MERN 
-application. This DNS address points to the Ingress Controller, which routes the traffic to the 
-appropriate service within the Kubernetes cluster. 
-
-### Challenges Faced
-
-During the implementation of this project, several challenges were encountered: 
-
-- Configuring Kubernetes Resources: Managing complex Kubernetes YAML 
-configurations for deployments, services, and Ingress was a challenging task that required careful attention to detail. 
-
-- Handling Container Security: Ensuring that the Docker images were securely stored and that the containers were protected against vulnerabilities required setting up proper IAM roles and security groups in AWS. 
-
-- Managing Load Balancing and Traffic Routing: Configuring the ALB and Ingress Controller to handle dynamic traffic patterns and ensure reliable access to the application was a critical part of the deployment.
-
-
-## Launching Workflow on AWS
+### Set an environment
 
 **Step 1:** Create an EC2 Instance with following `User Data`
 
@@ -152,6 +77,8 @@ AWS Secret Access Key: YOUR_SECRET_ACCESS_KEY
 Default region name: REGION
 Default output format: json
 ```
+
+### Upload a docker image on ECR
 
 **Step 3:** Create a repository on **AWS ECR** to store our docker image.
 
@@ -234,7 +161,9 @@ latest: digest: sha256:0f2668b.................01759c4 size: XXXX
 
 **Repeat the step for all the image which you want to push on ECR**
 
-**Step 5:** Create an EKS Cluster
+### Setting kubernetes
+
+**Step 5:** To create an EKS Cluster
 
 Following will be the configuration of my nodes in a cluster (you can change if you want) -
 

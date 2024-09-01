@@ -1,12 +1,12 @@
-### [**Table of Contents**](https://github.com/xanderbilla/ExamPrep-AWS/blob/main/README.md) 
+### [**Table of Contents**](https://github.com/xanderbilla/ExamPrep-AWS/wiki)
 
-# Mini Project - Creating a CI/CD Pipeline to host an application
+# Project 1 ‐ Create a CI CD Pipeline
 
-## Introduction
+### [**Click here to read the developer docs**](https://github.com/xanderbilla/ExamPrep-Workspace/wiki/Project-1-%E2%80%90-Create-a-CI-CD-Pipeline)
 
-## Workflow
+## Implementation
 
-## Create EC2 Instance and install required packages
+### Create EC2 Instance and install required packages
 
 **Step 1:** Select a nearest region **>>** Go to AWS Services **>>** EC2
 
@@ -78,13 +78,13 @@ ssh -i <KEY_PAIR> username@<INSTANCE_DNS/IP_ADDRESS>
 
 **Step 14.2:** Click `Save rules`
 
-## Create an application and upload it on Github
+### Create an application and upload it on Github
 
 I'm using EJS application here (source code available in this repository)
 
-## Contiuous Integeration
+### Contiuous Integeration
 
-### Install Git, Jenkins and Docker
+#### Install Git, Jenkins and Docker
 
 **Step 15:** Install Jenkins
 
@@ -130,7 +130,7 @@ sudo systemctl restart jenkins
 sudo systemctl restart docker
 ```
 
-### Configuring Jenkins
+#### Configuring Jenkins
 
 **Step 19:** Open the public IP address with port 8080 - [**http://<YOUR_PUBLIC_IP_ADDRESS>:8080/**]()
 
@@ -154,7 +154,7 @@ Finally Click on **Start Using Jenkins**
 
 ![P1_STEP_23.2_IMG](https://xanderbilla.s3.ap-south-1.amazonaws.com/Semester_V/__assets/P1_STEP_23.2_IMG.png)
 
-## Create a Pipeline
+### Create a Pipeline
 
 **Step 24:** Click on create a Job
 
@@ -173,7 +173,8 @@ Finally Click on **Start Using Jenkins**
     - Enter the GitHub Repo URL
     - Add a credential
 
-#### How to add a Credential
+
+##### How to add a Credential
 
 **Step 26.1**: Click on Credential >> Kind >> SSH Username with private key
 
@@ -229,9 +230,9 @@ The key's randomart image is:
 
 **Step 27:** Click `Apply` >> `Save `
 
-## Continuous Development
+### Continuous Development
 
-### Execute a task
+#### Execute a task
 
 **Step 28:** Go to Jenkins Dashboard >> Select Your Project >> Configure
 
@@ -256,13 +257,13 @@ Once the Build is `SUCCESS`. Verify by checking your application of it's accessi
 
 ![P1_STEP_31.2_IMG](https://xanderbilla.s3.ap-south-1.amazonaws.com/Semester_V/__assets/P1_STEP_31.2_IMG.png)
 
-## Continuous Deployment
+### Continuous Deployment
 
 To trigger the build automatically when developer push new code in GitHub rpository we use `WebHooks`.
 
 >`Webhooks` are HTTP callbacks triggered by events in an application. They allow you to send automated notifications to your application when something happens in another system. This enables real-time communication and integration between different services.
 
-### Create a webhook in GitHub to integerate with Jenkins
+#### Create a webhook in GitHub to integerate with Jenkins
 
 **Step 32:** Go to Jenkins Dashboard >> Manage Jenkins >> Plugins
 
@@ -288,7 +289,7 @@ Must check mark on the last checkbox on the **Github Integration** Plugin page
 
 **Step 37**: Go to the configuration page of your Jenkins Project and Under **Build Trigger** >> Checkmark **GitHub hook trigger for GITScm polling**
 
-### Test the application
+#### Test the application
 
 Make some changes in the repository code and commit changes.
 
