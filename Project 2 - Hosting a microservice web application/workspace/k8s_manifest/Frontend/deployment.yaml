@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
-  namespace: my-app
+  namespace: workshop
   labels:
     role: frontend
     env: demo
@@ -29,13 +29,6 @@ spec:
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
-            value: "http://backend.amanpathakdevops.study/api/tasks"
-        resources:
-          limits:
-            cpu: "1"
-            memory: "1.5Gi"
-          requests:
-            cpu: "0.5"
-            memory: "750Mi"
+            value: "http://k8s.xanderbilla.com/api/tasks"
         ports:
         - containerPort: 3000

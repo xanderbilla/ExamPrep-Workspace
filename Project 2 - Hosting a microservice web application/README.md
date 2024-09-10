@@ -172,7 +172,7 @@ Following will be the configuration of my nodes in a cluster (you can change if 
 - **Max Nodes:** 2
 
 ```bash
-eksctl create cluster --name CLUSTER_NAME --region REGION --node--type t2.medium --nodes-min 2 --nodes-max 2
+eksctl create cluster --name CLUSTER_NAME --region REGION --node-type t2.medium --nodes-min 2 --nodes-max 2
 ```
 
 > It use AWS Cloudformation at the backend to create a cluster
