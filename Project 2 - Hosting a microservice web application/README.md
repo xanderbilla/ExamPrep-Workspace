@@ -24,20 +24,8 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 sudo ./aws/install
 
-# Clone the ExamPrep-Workspace repository
-git clone https://github.com/xanderbilla/ExamPrep-Workspace
-
-# Create a workspace directory and copy the contents of Final_Project to it
-mkdir workspace
-cp -r ExamPrep-Workspace/Final_Project/* workspace/
-
-# Navigate to the workspace directory
-cd workspace/
-
 # Install Docker
 sudo yum install -y docker
-sudo service docker start
-sudo chown $USER /var/run/docker.sock
 
 # Download and install kubectl
 curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.2/2024-07-12/bin/linux/amd64/kubectl
@@ -78,13 +66,37 @@ Default region name: REGION
 Default output format: json
 ```
 
-### Upload a docker image on ECR
+### Update the permissions and create a workspace
 
-**Step 3:** Create a repository on **AWS ECR** to store our docker image.
+Step 3: Connect your EC2 terminal using putty or local PC terminal.
+
+```powershell
+ssh -i PEM_KEY USER@IP_ADDRESS
+```
+
+Step 7: Start the docker service and create a new group called docker and add the user to allow the user to run docker commands without sudo
 
 ```bash
-aws ecr-public create-repository --repository-name REPOSITORY_NAME --region us-
-east-1
+sudo service docker start
+sudo chown $USER /var/run/docker.sock 
+```
+
+Step 5: Clone the ExamPrep-Workspace repository
+
+```bash
+git clone https://github.com/xanderbilla/ExamPrep-Workspace
+mkdir workspace
+cp -r cp ExamPrep-Workspace/Project\ 2\ -\ Hosting\ a\ microservice\ web\ application/* workspace/
+```
+Step 5: 
+
+
+### Upload a docker image on ECR
+
+**Step 6:** Create a repository on **AWS ECR** to store our docker image.
+
+```bash
+aws ecr-public create-repository --repository-name REPOSITORY_NAME --region us-east-1
 ```
 
 Output:
@@ -104,13 +116,15 @@ Output:
 
 >*For the time being the command to create Public ECR repository is not supported*
 
-**Step 4:** Push the docker image to created repository on ECR
+**Step 7:** Push the docker image to created repository on ECR
 
-**Step 4.1:**  An authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
+**Step 7.1:**  An authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
 
 ```bash
-aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/u7m1j8y0
+aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin REPOSITORY_URI
 ```
+
+For **REPOSITORY_URL** refer to **Step 3 Output**
 
 Output -
 
@@ -122,7 +136,7 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 Login Succeeded
 ```
 
-**Step 4.2:** Build your Docker image using the following command. For information on building a Docker file from scratch see the instructions here . You can skip this step if your image is already built:
+**Step 7.2:** Build your Docker image using the following command. For information on building a Docker file from scratch see the instructions here . You can skip this step if your image is already built:
 
 ```bash
 docker build -t IMAGE_NAME PATH_TO_DOCKERFILE
@@ -134,16 +148,16 @@ Output
 [+] Building 0.8s (10/10) FINISHED                                             docker:default
 ```
 
-**Step 4.3:** After the build completes, tag your image so you can push the image to this repository:
+**Step 7.3:** After the build completes, tag your image so you can push the image to this repository:
 
 ```bash
-docker tag IMAGE_NAME:latest public.ecr.aws/u7m1j8y0/REPOSITORY_NAME:latest
+docker tag IMAGE_NAME:latest REPOSITORY_URI:latest
 ```
 
-**Step 4.4:** Run the following command to push this image to your newly created AWS repository:
+**Step 7.4:** Run the following command to push this image to your newly created AWS repository:
 
 ```bash
-docker push public.ecr.aws/u7m1j8y0/REPOSITORY_NAME:latest
+docker push REPOSITORY_URI:latest
 ```
 
 Output:
@@ -163,7 +177,7 @@ latest: digest: sha256:0f2668b.................01759c4 size: XXXX
 
 ### Setting kubernetes
 
-**Step 5:** To create an EKS Cluster
+**Step 8:** To create an EKS Cluster
 
 Following will be the configuration of my nodes in a cluster (you can change if you want) -
 
@@ -177,13 +191,13 @@ eksctl create cluster --name CLUSTER_NAME --region REGION --node-type t2.medium 
 
 > It use AWS Cloudformation at the backend to create a cluster
 
-**Step 6:** Update kubeconfig file with the cluster details.
+**Step 9:** Update kubeconfig file with the cluster details.
 
 ```bash
 aws eks update-kubeconfig --region ap-south-1 --name CLUSTER_NAME 
 ```
 
-**It will be used by kubectl to interact with the cluster.**
+**It will be used by kubectl to interact with the particular cluster.**
 
 Output:
 
@@ -191,7 +205,7 @@ Output:
 Added new context CLUSTER_ARN to /home/USER/. kube/config
 ```
 
-**Step 7:** Create a namespace for Kubernetes to use manifest file.
+**Step 10:** Create a namespace for Kubernetes to use manifest file.
 
 ```bash
 kubectl create namespace NAMESPACE_NAME
@@ -203,11 +217,30 @@ Output:
 namespace/NAMESPACE_NAME created
 ```
 
-**Step 8:**
+**Step 11:**
 
 
 
+kubectl create namespace three-tier
+kubectl apply -f workspace/K8s_manifest/db/deploy.yaml
+kubectl apply -f workspace/K8s_manifest/db/pvc.yaml
+kubectl apply -f workspace/K8s_manifest/db/pv.yaml
 
+kubectl get deployment -n three-tier
+
+kubectl get pvc -n three-tier
+kubectl get svc -n three-tier
+
+kubectl get pods -n three-tier
+
+kubectl apply -f workspace/K8s_manifest/backend/deployment.yaml
+kubectl apply -f workspace/K8s_manifest/backend/service.yaml
+
+kubectl get pods --all-namespaces
+
+
+
+aws ec2 run-instances --image-id ami-02b49a24cfb95941c --min-count 1 --max-count 1 --key-name TEST --security-group-ids sg-04d3ec35f256d0003 --user-data ./User_Data.sh --instance-type t2.micro --vpc-id vpc-0bd20f5f5ea4b493b --subnet-id subnet-012777140a6292253
 
 
 
