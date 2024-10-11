@@ -10,7 +10,7 @@ This repo is used to demonstrate my DevOps project at Lovely Professional Univer
 
 | Content          | Docs               | Implementation |
 | :--------------- | :----------------: | :-------------: |
-| Project 1 - Create a CI/CD Pipeline | [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/wiki/Project-1-%E2%80%90-Create-a-CI-CD-Pipeline)| [Click Here](https://github.com/xanderbilla/https://github.com/xanderbilla/ExamPrep-Workspace/blob/main/Project%201%20-%20Create%20a%20CI-CD%20Pipeline/README.md)|| 
+| Project 1 - Create a CI/CD Pipeline | [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/wiki/Project-1-%E2%80%90-Create-a-CI-CD-Pipeline)| [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/blob/main/Project%201%20-%20Create%20a%20CI-CD%20Pipeline/README.md)|| 
 | Project 2 - Hosting a microservice web application | [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/wiki/Project-2-%E2%80%90-Hosting-a-microservice-web-application)| [Click Here](https://github.com/xanderbilla/ExamPrep-Workspace/blob/main/Project%202%20-%20Hosting%20a%20microservice%20web%20application/README.md)|
 
 # Author
