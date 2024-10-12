@@ -1,33 +1,32 @@
 ### [**Table of Contents**](https://github.com/xanderbilla/ExamPrep-Workspace/wiki)
 
-# Project 2 - Hosting a microservice web application
+# Project 2 - Hosting a Microservice Web Application
 
 ### [**Click here to read the developer docs**](https://github.com/xanderbilla/ExamPrep-Workspace/wiki/Project-2-%E2%80%90-Hosting-a-microservice-web-application)
 
 ## Implementation
 
-### Set an environment
+### Set Up the Environment
 
-**Step 1:** Create an EC2 Instance with following `User Data`
+**Step 1:** Create an EC2 Instance with the following `User Data`
 
->*User data allow us to automate tasks and customize your EC2 instances during the bootstrapping process. To write a `User data` go to Advance Setting at bottom of the screen whicle creating an EC2 Instance*
+> *User Data* allows you to automate tasks and customize EC2 instances during the bootstrapping process. To provide *User Data*, go to the **Advanced Settings** section while creating an EC2 instance and input the following script.
 
-```sh
-
+```bash
 #!/bin/bash
 
-# Install git
+# Install Git
 sudo yum install git -y
 
-# Download and install AWS CLI
+# Download and install AWS CLI v2
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
 
-# Clone the ExamPrep-Workspace repository
+# Clone the ExamPrep-Workspace repository from GitHub
 git clone https://github.com/xanderbilla/ExamPrep-Workspace
 
-# Create a workspace directory and copy the contents of Final_Project to it
+# Create a workspace directory and copy the contents of the Final Project folder into it
 mkdir workspace
 cp -r ExamPrep-Workspace/Final_Project/* workspace/
 
@@ -37,31 +36,29 @@ cd workspace/
 # Install Docker
 sudo yum install -y docker
 sudo service docker start
-sudo chown $USER /var/run/docker.sock
+sudo chown $USER /var/run/docker.sock  # Give current user access to Docker socket
 
-# Download and install kubectl
-curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.2/2024-07-12/bin/linux/amd64/kubectl
+# Install kubectl (Kubernetes command-line tool)
+curl -O https://s3.ap-south-1.amazonaws.com/amazon-eks/1.30.2/2024-07-12/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
-echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
+echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc  # Make kubectl available for future sessions
 
-
-# Download and install eksctl
+# Install eksctl (Kubernetes management tool for Amazon EKS)
 ARCH=amd64
 PLATFORM=$(uname -s)_$ARCH
 curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
-# (Optional) Verify checksum
-curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
 tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
 sudo mv /tmp/eksctl /usr/local/bin
 ```
 
-The above will do the following - 
+This script performs the following:
+- Installs Git
+- Installs AWS CLI v2 to interact with AWS services
+- Clones the project repository from GitHub
+- Sets up Docker and Kubernetes tools (`kubectl` and `eksctl`)
 
-- Install Git
-- Install AWS CLIv2
-- Install Docker
-- Install `kubectl` and `eksctl`
+
 
 **Step 2:** Configure AWS CLI
 
@@ -69,8 +66,7 @@ The above will do the following -
 aws configure
 ```
 
-Output:
-
+You will be prompted to input the following details:
 ```
 AWS Access Key ID: YOUR_ACCESS_KEY
 AWS Secret Access Key: YOUR_SECRET_ACCESS_KEY
@@ -78,17 +74,19 @@ Default region name: REGION
 Default output format: json
 ```
 
-### Upload a docker image on ECR
+> This step configures the AWS CLI with your credentials and region, allowing you to interact with AWS services like ECR, S3, and EC2.
 
-**Step 3:** Create a repository on **AWS ECR** to store our docker image.
+
+
+### Upload a Docker Image to Amazon ECR
+
+**Step 3:** Create a repository on **AWS ECR** (Elastic Container Registry)
 
 ```bash
-aws ecr-public create-repository --repository-name REPOSITORY_NAME --region us-
-east-1
+aws ecr-public create-repository --repository-name REPOSITORY_NAME --region us-east-1
 ```
 
 Output:
-
 ```json
 {
     "repository": {
@@ -102,112 +100,156 @@ Output:
 }
 ```
 
->*For the time being the command to create Public ECR repository is not supported*
+This command creates a public ECR repository where you will store your Docker images. *Note:* Public ECR is not always supported in some regions, so adjust accordingly if needed.
 
-**Step 4:** Push the docker image to created repository on ECR
 
-**Step 4.1:**  An authentication token and authenticate your Docker client to your registry. Use the AWS CLI:
+
+**Step 4:** Push the Docker image to ECR
+
+**Step 4.1:** Authenticate Docker with your ECR registry.
 
 ```bash
 aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/u7m1j8y0
 ```
 
-Output -
-
+The output confirms a successful login:
 ```
-! Your password will be stored unencrypted in /home/ec2-user/.docker/config.json.
-Configure a credential helper to remove this warning. See
-https://docs.docker.com/engine/reference/commandline/login/#credentials-store
-
 Login Succeeded
 ```
 
-**Step 4.2:** Build your Docker image using the following command. For information on building a Docker file from scratch see the instructions here . You can skip this step if your image is already built:
+**Step 4.2:** Build your Docker image. (You can skip this step if your image is already built.)
 
 ```bash
 docker build -t IMAGE_NAME PATH_TO_DOCKERFILE
 ```
 
-Output
-
-```
-[+] Building 0.8s (10/10) FINISHED                                             docker:default
-```
-
-**Step 4.3:** After the build completes, tag your image so you can push the image to this repository:
+**Step 4.3:** Tag the Docker image.
 
 ```bash
 docker tag IMAGE_NAME:latest public.ecr.aws/u7m1j8y0/REPOSITORY_NAME:latest
 ```
 
-**Step 4.4:** Run the following command to push this image to your newly created AWS repository:
+**Step 4.4:** Push the tagged image to your ECR repository.
 
 ```bash
 docker push public.ecr.aws/u7m1j8y0/REPOSITORY_NAME:latest
 ```
 
-Output:
+This uploads your Docker image to ECR, making it accessible for deployment.
 
-```
-The push refers to repository [public.ecr.aws/u7m1j8y0/my-app/frontend]
-4eb277d09173: Pushed
-f88d8075f405: Pushed
-.
-.
-.
-b2dba7477754: Pushed
-latest: digest: sha256:0f2668b.................01759c4 size: XXXX
-```
 
-**Repeat the step for all the image which you want to push on ECR**
 
-### Setting kubernetes
+### Setting Up Kubernetes
 
-**Step 5:** To create an EKS Cluster
-
-Following will be the configuration of my nodes in a cluster (you can change if you want) -
-
-- CPU (`node-type`): **t2.medium**
-- **Min Nodes:** 2
-- **Max Nodes:** 2
+**Step 5:** Create an EKS (Elastic Kubernetes Service) cluster
 
 ```bash
 eksctl create cluster --name CLUSTER_NAME --region REGION --node-type t2.medium --nodes-min 2 --nodes-max 2
 ```
 
-> It use AWS Cloudformation at the backend to create a cluster
+This command creates an EKS cluster with two nodes of type `t2.medium`. It uses AWS CloudFormation to automate the infrastructure setup.
 
-**Step 6:** Update kubeconfig file with the cluster details.
+
+
+**Step 6:** Update your kubeconfig file to enable kubectl access to the new EKS cluster.
 
 ```bash
-aws eks update-kubeconfig --region ap-south-1 --name CLUSTER_NAME 
+aws eks update-kubeconfig --region ap-south-1 --name CLUSTER_NAME
 ```
 
-**It will be used by kubectl to interact with the cluster.**
+This configures your local kubectl tool to connect to the EKS cluster.
 
-Output:
 
-```txt
-Added new context CLUSTER_ARN to /home/USER/. kube/config
-```
 
-**Step 7:** Create a namespace for Kubernetes to use manifest file.
+**Step 7:** Create a Kubernetes namespace to organize your resources.
 
 ```bash
 kubectl create namespace NAMESPACE_NAME
 ```
 
-Output:
 
-```txt
-namespace/NAMESPACE_NAME created
+
+**Step 8:** Deploy MongoDB pods to Kubernetes using YAML configuration files.
+
+```bash
+kubectl apply -f workspace/k8s_manifest/Database/deployment.yaml && \
+kubectl apply -f workspace/k8s_manifest/Database/secrets.yaml && \
+kubectl apply -f workspace/k8s_manifest/Database/service.yaml && \
+kubectl apply -f workspace/k8s_manifest/Database/pv.yaml && \
+kubectl apply -f workspace/k8s_manifest/Database/pvc.yaml
 ```
 
-**Step 8:**
+These commands create the necessary resources for MongoDB, including persistent volumes (PV) and persistent volume claims (PVC).
 
 
 
+**Step 9:** Deploy backend pods using YAML files.
 
+```bash
+kubectl apply -f workspace/k8s_manifest/Backend/deployment.yaml && \
+kubectl apply -f workspace/k8s_manifest/Backend/service.yaml
+```
+
+
+
+**Step 10:** Deploy frontend pods using YAML files.
+
+```bash
+kubectl apply -f workspace/k8s_manifest/Frontend/deployment.yaml && \
+kubectl apply -f workspace/k8s_manifest/Frontend/service.yaml
+```
+
+
+
+### Setting Up Load Balancer
+
+**Step 11:** Install AWS Load Balancer Controller.
+
+1. Create IAM policies and associate the IAM provider for the load balancer.
+   
+```bash
+curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
+aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam_policy.json
+eksctl utils associate-iam-oidc-provider --region=ap-south-1 --cluster=CLUSTER_NAME --approve
+eksctl create iamserviceaccount --cluster=CLUSTER_NAME --namespace=kube-system --name=aws-load-balancer-controller --role-name AmazonEKSLoadBalancerControllerRole --attach-policy-arn=arn:aws:iam::ACCOUNT_ID:policy/AWSLoadBalancerControllerIAMPolicy --approve --region=ap-south-1
+```
+
+2. Deploy the load balancer using Helm.
+
+```bash
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update eks
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=CLUSTER_NAME --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
+```
+
+
+
+**Step 12:** Deploy Ingress for external access.
+
+```bash
+kubectl apply -f workspace/k8s_manifest/ingress.yaml
+```
+
+You can verify deployments and pods with the following commands:
+
+```bash
+kubectl get nodes
+kubectl get deployment -n NAMESPACE_NAME
+kubectl get ing -n NAMESPACE_NAME
+kubectl get pods -n NAMESPACE_NAME
+kubectl get deployment -n kube-system aws-load-balancer-controller
+```
+
+To interact with MongoDB, use:
+
+```bash
+kubectl exec -it MOGODB_POD_NAME -n NAMESPACE_NAME -- /bin/sh
+mongo
+show databases
+use todo
+show collections
+db.tasks.find()
+```
 
 
 
