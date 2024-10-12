@@ -222,8 +222,6 @@ helm repo update eks
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=CLUSTER_NAME --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
 ```
 
-
-
 **Step 12:** Deploy Ingress for external access.
 
 ```bash
@@ -239,6 +237,8 @@ kubectl get ing -n NAMESPACE_NAME
 kubectl get pods -n NAMESPACE_NAME
 kubectl get deployment -n kube-system aws-load-balancer-controller
 ```
+
+**Step 12:** Update your hosted zone with CNAME in your DNS to access the application
 
 To interact with MongoDB, use:
 
