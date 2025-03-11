@@ -1,8 +1,6 @@
 [**Back to Home**](https://github.com/xanderbilla/ExamPrep-Workspace/wiki)
 
-<center>
-<img src='https://seeklogo.com/images/D/devops-logo-CDF1353483-seeklogo.com.png' height=150 align="center"/>
-</center>
+# Summer Training
 
 # Introduction
 
